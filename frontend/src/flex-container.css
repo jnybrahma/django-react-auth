@@ -1,0 +1,23 @@
+.flex-container {
+    display: flex;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1181e3;
+    background-color: cutom-color;
+    border-color: #151414;
+    border-color: cutom-cor;
+}
+
+.Form-Control:not(active) {
+    color: #336dff;
+    border-color: #151414;
+    width: 20%
+}
+
+.Form-Control:focus {
+    color: #09090a;
+    border-color: #151414;
+    width: 20%
+}
