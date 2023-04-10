@@ -1,24 +1,35 @@
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Button, Row , Col } from 'react-bootstrap';
 import axios from 'axios';
 import FormContainer from '../components/FormContainer';
+import { USER_UPDATE_PROFILE_FAIL} from '../constants/userConstants';
+
 
 export const ForgotPasswordPage = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [success, setSuccess] = useState(false);
-    const [emailValue, setEmailValue] = useState('');
+    const [email, setEmail] = useState('');
     const history = useNavigate();
+    const dispatch = useDispatch()
+
+    
 
     const onSubmitClicked = async () => {
         try {
-            await axios.put(`http://localhost:8000/api/users/forgot-password/${emailValue}/`);
+           const {data} = await axios.put(`http://localhost:8000/api/users/forgot-password/${email}/`);
+           //dispatch({
+        //    payload: data
+         //  })
             setSuccess(true);
             setTimeout(() => {
                 history('/login');
             }, 3000);
-        } catch (e) {
-            setErrorMessage(e.message);
+        } catch (error) {
+           setErrorMessage(error.message);
+           //setErrorMessage(error.response.data.detail);
+        
         }
     }
 
@@ -33,12 +44,12 @@ export const ForgotPasswordPage = () => {
             <p>Enter your email and we'll send you a reset link</p>
             {errorMessage && <div className="fail">{errorMessage}</div>}
             <input
-                value={emailValue}
-                onChange={e => setEmailValue(e.target.value)}
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 placeholder="someone@gmail.com" />
                 &nbsp; &nbsp;
             <Button
-                disabled={!emailValue}
+                disabled={!email}
                 onClick={onSubmitClicked}
             >Send Reset Link</Button>
         </div>

@@ -21,22 +21,25 @@ import uuid
        
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        data = super().validate(attrs)
-        serializer = UserSerializerWithToken(self.user).data
+       
+            data = super().validate(attrs)
+            serializer = UserSerializerWithToken(self.user).data
         
         
-        for k,v  in serializer.items():
-                data[k] = v 
+            for k,v  in serializer.items():
+                    data[k] = v 
                 
-                print(k,'-',v)
+                    print(k,'-',v)
         
                             
-        return data
-
+            return data
+      
 class MyTokenObtainPairView(TokenObtainPairView):
-        
-    serializer_class = MyTokenObtainPairSerializer
+
+        serializer_class = MyTokenObtainPairSerializer
     
+   
+        
 
 @api_view(['POST'])  
 def registerUser(request):

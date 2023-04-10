@@ -43,7 +43,6 @@ function HomePage() {
     return (
      <FormContainer>
         <div className='text-center'>
-            <h1>Info for </h1>
             <h2>Welcome to  Home Page! </h2>
             <h4>{ userInfo !== null ? userInfo.email : <i></i>}</h4>
             { userInfo !== null  && userInfo.is_email_verified === false ? (

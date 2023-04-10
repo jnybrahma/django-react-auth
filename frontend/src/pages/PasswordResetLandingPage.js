@@ -34,7 +34,7 @@ export const PasswordResetLandingPage = () => {
     return (
         <div className="content-container">
             <h1>Reset Password</h1>
-            <p>Please enter a new password</p>
+            <p><h3>Please enter a new password</h3></p>
             <input
                 type='password'
                 value={passwordValue}
