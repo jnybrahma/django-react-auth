@@ -16,6 +16,7 @@ import Footer from './components/Footer';
 import { PrivateRoute } from './auth/PrivateRoute';
 import  HomePage  from './pages/HomePage';
 import LoginFail from './pages/LoginFail';
+import MainPage from './pages/MainPage';
 
 
 function App() {
@@ -28,7 +29,8 @@ function App() {
         <main className="py-3">
         <Container>
               <Routes>
-               <Route path="/" element={<HomePage/>} exact/>
+               <Route path="/" element={<HomePage/>} exact />
+               <Route path="/mainPage" element={<MainPage/>}/>
                <Route path="/loginFail" element={<LoginFail/>}/>
                 <Route path='/login' element={<LogInPage/>}/>
                 <Route path='/forgot-password' element={<ForgotPasswordPage/>}/>

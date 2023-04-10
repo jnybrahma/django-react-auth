@@ -1,45 +1,69 @@
-import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useNavigate , Link, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Button, Row , Col } from 'react-bootstrap';
-import axios from 'axios';
-import { useToken } from '../auth/useToken';
+import Loader  from '../components/Loader';
+import Message  from '../components/Message';
 import FormContainer from '../components/FormContainer';
+import { register } from '../actions/userActions';
 
 export const SignUpPage = () => {
-    const [token, setToken] = useToken();
+     
 
-    const [errorMessage, setErrorMessage] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const  [message, setMessage] = useState('')
 
-    const [emailValue, setEmailValue] = useState('');
-    const [passwordValue, setPasswordValue] = useState('');
-    const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
 
     const history = useNavigate();
 
+    const dispatch = useDispatch()
+    const location = useLocation()
+    const redirect = useLocation().search ? location.search.split('=')[1] : '/please-verify'
    
+    const userRegister = useSelector(state => state.userRegister) // // this state is pulling from store.js
+    const {error, loading, userInfo} = userRegister            // // this comes from Reducer.
 
-    const onSignUpClicked = async () => {
-        const response = await axios.post('http://localhost:8000/api/users/register/', {
-            email: emailValue,
-            password: passwordValue,
-        });
-        const { token } = response.data;
-        setToken(token);
-        history('/please-verify');
+      useEffect (() =>{
+        if(userInfo){
+            history(redirect)
+        }
+    }, [history, userInfo, redirect])
+
+    const onSignUpClicked =  (e) => {
+        //const response = await axios.post('http://localhost:8000/api/users/register/', {
+        //    email: emailValue,
+        //   password: passwordValue,
+       // });
+        //const { token } = response.data;
+       // setToken(token);
+       e.preventDefault()
+        if(password !== confirmPassword){
+            setMessage('Password do not match')
+        } else{
+            dispatch(register( email,password))
+        }
+       /// history('/please-verify');
     }
+
+
 
     return (
          <FormContainer>
             <h1>Sign Up</h1>
-            {errorMessage && <div className="fail">{errorMessage}</div>}
-    <Form>  
+            {message && <Message variant='danger'>{message}</Message>}
+            {error && <Message variant='danger'>{error}</Message>}
+            {loading && <Loader/>}
+
+           <Form>  
                 <Form.Group controlId='email'>
                 <Form.Label><h4>Email Address : &nbsp; </h4></Form.Label>
                 <Form.Control
                 type='email'
                 placeholder='someone@gmail.com'
-                value={emailValue}
-                onChange={(e) => setEmailValue(e.target.value)}>
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}>
                 </Form.Control>
             </Form.Group>
         <hr/>
@@ -49,8 +73,8 @@ export const SignUpPage = () => {
                 <Form.Control
                 type='password'
                 placeholder='Enter Password'
-                value={passwordValue}
-                onChange={(e) => setPasswordValue(e.target.value)}>
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}>
                 </Form.Control>
             </Form.Group>
             <hr/>
@@ -60,15 +84,15 @@ export const SignUpPage = () => {
                 <Form.Control
                 type='password'
                 placeholder='Enter Password again'
-                value={confirmPasswordValue}
-                onChange={(e) => setConfirmPasswordValue(e.target.value)}>
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}>
                 </Form.Control>
             </Form.Group>
             <hr />
             <Button
                 disabled={
-                    !emailValue || !passwordValue ||
-                    passwordValue !== confirmPasswordValue
+                    !email || !password ||
+                    password !== confirmPassword
                 }
                 onClick={onSignUpClicked}>Sign Up</Button>
                 &nbsp; &nbsp;

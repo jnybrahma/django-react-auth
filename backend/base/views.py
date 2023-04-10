@@ -69,16 +69,20 @@ def registerUser(request):
 
 @api_view(['PUT'])
 def verify_user(request, pk):
+    
+    data = request.data
         
     try:
         user = User.objects.get(email_verification_token=pk)
         user.is_email_verified = True
         
         user.save()
-        #serializer = UserSerializer(user, many=False)
-        #return Response(serializer.data)
+      
         message ={'detail' : 'Thank You! your email has verified! Now you can log in'}
-        return Response(message, status=status.HTTP_200_OK)     
+        serializer = UserSerializerWithToken(user,many=False)
+        return Response(serializer.data)
+
+       # return Response(message, status=status.HTTP_200_OK)     
     
     except:
         message ={'detail' : 'Email is not verified! Please try again'}

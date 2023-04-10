@@ -12,7 +12,7 @@ export const EmailVerificationSuccess = () => {
             <p>
                 Thanks for verifying your email, now you can use all the app's features.
             </p>
-            <Button onClick={() => history('/')}>Go to home page</Button>
+
         </div>
     );
 }

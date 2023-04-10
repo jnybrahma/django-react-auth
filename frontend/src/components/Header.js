@@ -12,7 +12,7 @@ function Header() {
     <header>
       <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect >
         <Container>
-          <LinkContainer to="/login">
+          <LinkContainer to="/mainPage">
             <Navbar.Brand>
               <h4 style={{color: 'red' }}>User Authentication</h4>
             </Navbar.Brand>

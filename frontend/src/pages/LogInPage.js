@@ -1,42 +1,42 @@
-import { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
-import { useNavigate} from "react-router-dom";
 import axios from 'axios';
-import { useToken } from '../auth/useToken';
+import React, { useState, useEffect} from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Form, Button, Row , Col } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import Loader  from '../components/Loader';
+import Message  from '../components/Message';
 import FormContainer from '../components/FormContainer';
+import { login } from '../actions/userActions';
 
 export const LogInPage = () => {
-        const [token, setToken] = useToken();        
 
-        const [errorMessage, setErrorMessage] = useState('');
+        const  [email, setEmail] = useState('')
+        const  [password, setPassword] = useState('')
 
-        const [emailValue, setEmailValue] = useState('');
-        const [passwordValue, setPasswordValue] = useState('');
         const history = useNavigate();
 
+        const dispatch = useDispatch()
+        const location =useLocation()
+        const redirect = useLocation().search ? location.search.split('=')[1] : '/'
+
+
+        const userLogin = useSelector(state => state.userLogin) // // this state is pulling from store.js
+        const {error, loading, userInfo} = userLogin            // from userReducer
+        
+        useEffect (() =>{
+            if(userInfo){
+                history(redirect)
+        }
+    }, [history, userInfo, redirect])
+
+        
+         
     
 
-        const onLogInClicked = async() => {
-            const config = {
-                withCredentials: false,
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            }
-            try {
-            const response = await axios.post('http://localhost:8000/api/users/login/', {
-                email: emailValue,
-                password: passwordValue,
-            }, config);
-            const { token, email, is_email_verified  } = response.data;
-            setToken(token);
-            console.log("email:", email)
-            console.log("Email verified:", is_email_verified)
-         
-            history('/');
-             } catch(e){
-                history('/loginFail')
-            }
+        const onLogInClicked = (e) => {
+            
+            e.preventDefault()
+            dispatch(login(email,password))
 
         }
 
@@ -45,15 +45,16 @@ export const LogInPage = () => {
           <FormContainer >
 
             <h1 > Log In </h1> 
-            {errorMessage && <div className = "fail" > { errorMessage } </div>} 
+            {error && <Message variant="danger" > { error } </Message>}
+            {loading && <Loader/>} 
                 <Form>
                     <Form.Group controlId = 'email' >
                     <Form.Label > <h4> Email Address: &nbsp; &nbsp; </h4> </Form.Label >
                     <Form.Control
                          type = 'email'
                           placeholder = 'someone@gmail.com'
-                             value = { emailValue }
-                             onChange = {(e) => setEmailValue(e.target.value) } >
+                             value = { email }
+                             onChange = {(e) => setEmail(e.target.value) } >
                     </Form.Control>
                      </Form.Group>
 
@@ -62,12 +63,12 @@ export const LogInPage = () => {
                     <Form.Control
                         type = 'password'
                         placeholder = 'Enter Password'
-                        value = { passwordValue }
-                        onChange = {(e) => setPasswordValue(e.target.value) } >
+                        value = { password }
+                        onChange = {(e) => setPassword(e.target.value) } >
                     </Form.Control>
                     </Form.Group>
                      <hr/>
-                    <Button variant = 'primary' disabled = {!emailValue || !passwordValue } onClick = { onLogInClicked } >Log In </Button>
+                    <Button variant = 'primary' disabled = {!email || !password } onClick = { onLogInClicked } >Log In </Button>
                      <hr/>
                     < Button variant = 'primary' onClick = {() => history('/forgot-password') } > Forgot your password ? </Button >
                     &nbsp;
